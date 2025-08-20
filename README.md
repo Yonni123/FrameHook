@@ -69,8 +69,8 @@ self, screen, game_FPS, counter, time_ms
 counter – A frame counter.
 
 **Functions and Properties of the `self` argument passed to the hook function:**  
-`self.width` and `self.width` - Integers, the size (in pixels) of the region that you selected (game frame)
-`screen_x, screen_y = self.game_to_screen_coords(game_x, game_y)` - A function that converts coordinates from game to screen.
+`self.width` and `self.width` - Integers, the size (in pixels) of the region that you selected (game frame)  
+`screen_x, screen_y = self.game_to_screen_coords(game_x, game_y)` - A function that converts coordinates from game to screen.  
 `game_x, game_y = self.screen_to_game_coords(screen_x, screen_y)` - Vise Versa basically (yes I am lazy)
 
 ### 3. Start the Game Loop
