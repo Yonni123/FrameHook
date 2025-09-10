@@ -5,14 +5,18 @@ import time
 
 
 class GameWrapper:
-    def __init__(self, monitor_index=0, trim=False):
+    def __init__(self, monitor_index=0, trim=False, game_region=None):
         with mss.mss() as sct:
             if 0 <= monitor_index < len(sct.monitors):
                 self.monitor = sct.monitors[monitor_index]
             else:
                 raise ValueError(f"Invalid monitor index: {monitor_index}. Available: {len(sct.monitors) - 1}")
-            
-        self.__game_region = self.__get_game_region(trim)
+        
+        if game_region:
+            self.__game_region = game_region
+        else:
+            self.__game_region = self.__get_game_region(trim)
+            print(f"Selected game region: {self.__game_region}")
         self.width = self.__game_region["width"]
         self.height = self.__game_region["height"]
 
@@ -43,7 +47,7 @@ class GameWrapper:
     def __auto_crop_edges(self, image, x1, y1, x2, y2):
         """Crops an image by detecting the edge of content using Canny edge detection."""
         # Crop the original image to the selected coordinates
-        image = image[y1:y2, x1:x2]
+        image = np.array(image)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(gray, 10, 50)
 
@@ -171,6 +175,8 @@ class GameWrapper:
         self.__game_region = {"top": min(y1, y2), "left": min(x1, x2), "width": abs(x2 - x1), "height": abs(y2 - y1)}
         if not trim:
             return self.__game_region
+        
+        screen = mss.mss().grab(self.__game_region)
         x1, y1, x2, y2 = self.__auto_crop_edges(screen, x1, y1, x2, y2)
         return {"top": min(y1, y2), "left": min(x1, x2), "width": abs(x2 - x1), "height": abs(y2 - y1)}
 
